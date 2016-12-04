@@ -3,8 +3,6 @@
 #include <WaspLoRaWAN.h>
 #include <WaspOPC_N2.h>
 
-//Sensor declaration
-
 /*
   Variables for measuring cycle:
     - Sensor declaration
