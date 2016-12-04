@@ -1,13 +1,13 @@
 #include <WaspLoRaWAN.h>
 
 //Define the node id for the data frame
-char node_ID[] = "VJCTT01";
+char node_ID[] = "VJCTT02";
 
 //Define LoRaWAN Parameters
-char DEVICE_EUI[] = "";
-char DEVICE_ADDR[] = "";
-char NWK_SESSION_KEY[] = "";
-char APP_SESSION_KEY[] = "";
+char DEVICE_EUI[] = "000000008DEC044C";
+char DEVICE_ADDR[] = "8DEC044C";
+char NWK_SESSION_KEY[] = "14C6169BAD787AFBCCBA84A05204FBD2";
+char APP_SESSION_KEY[] = "730D46E77D75D807AD7F622CC3CC8AB3";
 uint8_t PORT = 3;
 uint8_t SOCKET = SOCKET0;
 
