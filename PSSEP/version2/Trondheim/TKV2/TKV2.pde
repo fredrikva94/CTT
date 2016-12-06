@@ -41,7 +41,7 @@ void setup() {
       Setup loop:
         - Sets code version in data frame, using node_ID
         - Retrieves device address (for debugging purposes)
-        - Sets spreading factor (may only work P2P mode)
+        - Spreading factor is set in configuration code
     */
     USB.ON();
     USB.println(F("CTT Vejle 2"));
@@ -54,7 +54,6 @@ void setup() {
         USB.print(F("Successfully retrieved the device address. Device address: "));  
         USB.println(LoRaWAN._devAddr);
     }
-    error == LoRaWAN.setRadioSF("sf9");
     if(error == 0){
         USB.println(F("Radio SF set."));
     } else {
@@ -71,11 +70,14 @@ void loop() {
     - Set the sleep interval based on measured battery level
   */
   battery = PWR.getBatteryLevel();
-    if(battery >= 60){
-        sleepInterval = "00:00:07:30";
-    } else if(battery > 30 && battery < 60){
+    if(battery >= 80){
+        sleepInterval = "00:00:12:30";
+    } else if(battery >= 70 && battery < 80){
+        sleepInterval = "00:00:27:30";
+    } else if(battery > 30 && battery < 70){
         sleepInterval = "00:00:57:30";
-    } else {
+    }
+    else {
         while(battery <= 30){
           battery = PWR.getBatteryLevel();
           USB.print(F("Low bat: "));
@@ -114,7 +116,7 @@ void loop() {
       if(no2concentration < 0){
          no2concentration = sensorError;
       }
-      if(battery > 60){
+      if(battery >= 70){
         PMX = true;  
       } else {
         PMX = false;  
