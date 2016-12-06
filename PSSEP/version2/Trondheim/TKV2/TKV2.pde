@@ -3,11 +3,6 @@
 #include <WaspLoRaWAN.h>
 #include <WaspOPC_N2.h>
 
-/*
-Authors:
-  Freddern, Eddern, Espen og han derre Lasse fra DTU
-
-*/
 
 /*
   Variables for measuring cycle:
