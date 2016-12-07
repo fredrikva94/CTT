@@ -19,6 +19,8 @@ float temperature;
 float humidity;
 float pressure;
 int battery;
+boolean PMX = false;
+int status;
 float sensorError = -99.0;
 float lowbat = -98.0;
 char *sleepInterval;
@@ -29,7 +31,7 @@ uint8_t socket = SOCKET0;
 uint8_t PORT = 3;
 
 //Code version (HEX)
-char node_ID[] = "0000003";
+char node_ID[] = "0000002";
 
 void setup() {
   /*
@@ -49,25 +51,30 @@ void setup() {
     USB.print(F("Successfully retrieved the device address. Device address: "));
     USB.println(LoRaWAN._devAddr);
   }
+  if(error == 0){
+    USB.println(F("Radio SF set."));
+  } else {
+    USB.print(F("Error setting SF. Error: "));
+    USB.println(error, DEC);
+  }
   LoRaWAN.OFF(socket);
 }
 
 
 void loop() {
-  USB.println(F("Loop function:"));
+  USB.println(F("Hehehe"));
   /*
     - Measure battery level
     - Set the sleep interval based on measured battery level
   */
   battery = PWR.getBatteryLevel();
   if(battery >= 80){
-    sleepInterval = "00:00:05:00";
-  } else if(battery >= 70){
     sleepInterval = "00:00:12:30";
+  } else if(battery >= 70){
+    sleepInterval = "00:00:27:30";
   } else if(battery > 40){
     sleepInterval = "00:00:57:30";
-  }
-  else if(battery > 30){
+  } else if(battery > 30){
     sleepInterval = "00:06:00:00";
   }
   else {
@@ -86,7 +93,7 @@ void loop() {
   /*
     If battery level is over 40 percent:
       - Measure all parameters except PMx, and add them to a binary data frame
-    If battery level is over 70 percent:
+    If battery level is over 60 percent:
       - Same as above, with PMx included
     If battery level is above 30 percent, but below 40 percent:
       - Send only battery level
@@ -112,12 +119,27 @@ void loop() {
     if(no2concentration < 0){
        no2concentration = sensorError;
     }
+    if(battery >= 70){
+      PMX = true;
+      takePMMeasurement();
+    } else {
+      PMX = false;
+    }
     frame.createFrame(BINARY);
     frame.addSensor(SENSOR_GP_CO2, co2concentration);
     frame.addSensor(SENSOR_GP_NO2, no2concentration);
     frame.addSensor(SENSOR_GP_TC, temperature);
     frame.addSensor(SENSOR_GP_HUM, humidity);
     frame.addSensor(SENSOR_GP_PRES, pressure);
+    if(PMX == true){
+      frame.addSensor(SENSOR_OPC_PM1, OPC_N2._PM1);
+      frame.addSensor(SENSOR_OPC_PM2_5, OPC_N2._PM2_5);
+      frame.addSensor(SENSOR_OPC_PM10, OPC_N2._PM10);
+    } else {
+      frame.addSensor(SENSOR_OPC_PM1, lowbat);
+      frame.addSensor(SENSOR_OPC_PM2_5, lowbat);
+      frame.addSensor(SENSOR_OPC_PM10, lowbat);
+    }
   } else {
     frame.createFrame(BINARY);
     frame.addSensor(SENSOR_GP_CO2, lowbat);
@@ -125,15 +147,27 @@ void loop() {
     frame.addSensor(SENSOR_GP_TC, lowbat);
     frame.addSensor(SENSOR_GP_HUM, lowbat);
     frame.addSensor(SENSOR_GP_PRES, lowbat);
+    frame.addSensor(SENSOR_OPC_PM1, lowbat);
+    frame.addSensor(SENSOR_OPC_PM2_5, lowbat);
+    frame.addSensor(SENSOR_OPC_PM10, lowbat);
   }
   frame.addSensor(SENSOR_BAT, battery);
-  
+
    /*
      - Display frame (for debugging purposes)
    */
   frame.showFrame();
   sendFrame();
   PWR.deepSleep(sleepInterval, RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
+}
+
+//Take the PM measurement
+void takePMMeasurement() {
+  status = OPC_N2.ON();
+  if(status == 1){
+    OPC_N2.getPM(5000);
+  }
+  OPC_N2.OFF();
 }
 
 //Send data frame over LoRaWAN
