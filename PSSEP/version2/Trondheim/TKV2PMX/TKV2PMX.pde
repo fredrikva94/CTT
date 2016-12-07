@@ -62,7 +62,6 @@ void setup() {
 
 
 void loop() {
-  USB.println(F("Hehehe"));
   /*
     - Measure battery level
     - Set the sleep interval based on measured battery level
