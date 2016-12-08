@@ -55,6 +55,10 @@ void setup() {
 }
 
 void loop() {
+<<<<<<< HEAD
+
+=======
+>>>>>>> 0ca28224b985d9160ffd649b1a6ed36676ed9f5e
   /*
     - Measure battery level
     - Set the sleep interval based on measured battery level
