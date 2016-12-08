@@ -51,22 +51,16 @@ void setup() {
     USB.print(F("Successfully retrieved the device address. Device address: "));
     USB.println(LoRaWAN._devAddr);
   }
-  if(error == 0){
-    USB.println(F("Radio SF set."));
-  } else {
-    USB.print(F("Error setting SF. Error: "));
-    USB.println(error, DEC);
-  }
   LoRaWAN.OFF(socket);
 }
 
-
 void loop() {
-  USB.println(F("Hehehe"));
+
   /*
     - Measure battery level
     - Set the sleep interval based on measured battery level
   */
+  USB.println(F("Loop function:"));
   battery = PWR.getBatteryLevel();
   if(battery >= 80){
     sleepInterval = "00:00:12:30";
