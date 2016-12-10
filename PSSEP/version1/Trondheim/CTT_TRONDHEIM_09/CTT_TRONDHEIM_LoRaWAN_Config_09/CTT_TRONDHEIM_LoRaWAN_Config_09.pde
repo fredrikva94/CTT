@@ -6,7 +6,7 @@ char node_ID[] = "TKCTT09";
 //Define LoRaWAN Parameters
 char DEVICE_EUI[] = "";
 char DEVICE_ADDR[] = "";
-char NWK_SESSION_KEY[] = "";
+char NWK_SESSION_KEY";
 char APP_SESSION_KEY[] = "";
 uint8_t PORT = 3;
 uint8_t SOCKET = SOCKET0;

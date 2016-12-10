@@ -19,11 +19,11 @@ float temperature;
 float humidity;
 float pressure;
 int battery;
-boolean PMX = false;
-int status;
 float sensorError = -99.0;
 float lowbat = -98.0;
 char *sleepInterval;
+boolean PMX = false;
+int status;
 
 //LoRaWAN variables
 uint8_t error;
@@ -44,22 +44,19 @@ void setup() {
   USB.println(F("CTT Waspmote debug:"));
   USB.println(PWR.getBatteryVolts());
   USB.println(PWR.getBatteryLevel(),DEC);
-  frame.setID(node_ID);
+  frame.setID("0000002");
+  USB.println(F("Node_ID is set"));
   LoRaWAN.ON(socket);
-  error = LoRaWAN.getDeviceAddr();
-  if(error == 0){
-    USB.print(F("Successfully retrieved the device address. Device address: "));
-    USB.println(LoRaWAN._devAddr);
-  }
+  USB.println(LoRaWAN._devAddr);
   LoRaWAN.OFF(socket);
 }
 
 void loop() {
+  USB.println(F("Loop function:"));
   /*
     - Measure battery level
     - Set the sleep interval based on measured battery level
   */
-  USB.println(F("Loop function:"));
   battery = PWR.getBatteryLevel();
   if(battery >= 80){
     sleepInterval = "00:00:12:30";
@@ -67,7 +64,8 @@ void loop() {
     sleepInterval = "00:00:27:30";
   } else if(battery > 40){
     sleepInterval = "00:00:57:30";
-  } else if(battery > 30){
+  } 
+  else if(battery > 30){
     sleepInterval = "00:06:00:00";
   }
   else {
@@ -114,7 +112,12 @@ void loop() {
     }
     if(battery >= 70){
       PMX = true;
-      takePMMeasurement();
+      //takePMMeasurement();
+      status = OPC_N2.ON();
+      if(status == 1){
+        OPC_N2.getPM(5000);
+      }
+      OPC_N2.OFF();
     } else {
       PMX = false;
     }
@@ -155,13 +158,13 @@ void loop() {
 }
 
 //Take the PM measurement
-void takePMMeasurement() {
+/*void takePMMeasurement() {
   status = OPC_N2.ON();
   if(status == 1){
     OPC_N2.getPM(5000);
   }
   OPC_N2.OFF();
-}
+}*/
 
 //Send data frame over LoRaWAN
 void sendFrame() {

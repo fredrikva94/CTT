@@ -42,7 +42,7 @@ void setup() {
   USB.println(F("CTT Waspmote debug:"));
   USB.println(PWR.getBatteryVolts());
   USB.println(PWR.getBatteryLevel(),DEC);
-  frame.setID(node_ID);
+  frame.setID("0000003");
   LoRaWAN.ON(socket);
   error = LoRaWAN.getDeviceAddr();
   if(error == 0){
