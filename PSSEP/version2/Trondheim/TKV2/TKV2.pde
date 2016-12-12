@@ -28,9 +28,6 @@ uint8_t error;
 uint8_t socket = SOCKET0;
 uint8_t PORT = 3;
 
-//Code version (HEX)
-char node_ID[] = "0000003";
-
 void setup() {
   /*
     Setup loop:
@@ -42,7 +39,8 @@ void setup() {
   USB.println(F("CTT Waspmote debug:"));
   USB.println(PWR.getBatteryVolts());
   USB.println(PWR.getBatteryLevel(),DEC);
-  frame.setID("0000003");
+  //Code version (HEX)
+  frame.setID("0000004");
   LoRaWAN.ON(socket);
   error = LoRaWAN.getDeviceAddr();
   if(error == 0){
@@ -61,21 +59,18 @@ void loop() {
   */
   battery = PWR.getBatteryLevel();
   if(battery >= 80){
-    sleepInterval = "00:00:05:00";
-  } else if(battery >= 70){
-    sleepInterval = "00:00:12:30";
+    sleepInterval = "00:00:17:30";
   } else if(battery > 40){
     sleepInterval = "00:00:57:30";
-  }
-  else if(battery > 30){
-    sleepInterval = "00:06:00:00";
+  } else if(battery > 30){
+    sleepInterval = "00:12:00:00";
   }
   else {
     while(battery <= 30){
       battery = PWR.getBatteryLevel();
       USB.print(F("Low bat: "));
       USB.println(battery, DEC);
-      PWR.deepSleep("00:12:00:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
+      PWR.deepSleep("00:16:00:00", RTC_OFFSET, RTC_ALM1_MODE1, ALL_OFF);
     }
     sleepInterval = "00:00:57:30";
   }
@@ -127,7 +122,7 @@ void loop() {
     frame.addSensor(SENSOR_GP_PRES, lowbat);
   }
   frame.addSensor(SENSOR_BAT, battery);
-  
+
    /*
      - Display frame (for debugging purposes)
    */
